@@ -185,6 +185,8 @@ exports.getUserDetails = catchAsyncError(async(req,res,next)=> {
     })
 })
 
+//update user Admin
+
 exports.updateUser = catchAsyncError(async (req,res,next)=> {
     const newUserData = {
         name: req.body.name,
