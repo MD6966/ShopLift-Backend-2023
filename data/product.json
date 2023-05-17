@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Memory card",
+        "price": "45.00",
+        "description": "Hello Jee from description",
+        "ratings" : 4.8,
+        "images" : [{
+            "public_id": "abcdefghijkl",
+            "url":"Syed/MD"
+        }],
+        "category": "Electronics",
+        "seller": "MD",
+        "stock": 50,
+        "numOfReviews": 33,
+        "reviews": []
+    }
+]
