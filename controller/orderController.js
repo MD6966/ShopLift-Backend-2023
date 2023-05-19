@@ -60,14 +60,14 @@ exports.myOrders = catchAsyncError(async(req,res,next)=> {
 })
 
 
-// get All orders
+// get All orders admin
 
 exports.allOrders = catchAsyncError(async(req,res,next)=> {
     const order = await Order.find()
 
     let totalAmount = 0;
     order.forEach(order=> {
-        totalAmount +=order.totalPrice
+        totalAmount += order.totalPrice
     })
 
     res.status(200).json({
@@ -89,11 +89,10 @@ exports.updateOrder = catchAsyncError(async(req,res,next)=> {
     })
     order.orderStatus = req.body.status,
     order.deliveredAt = Date.now()
-    await order.save({validateBeforeSave: false})
+    await order.save()
 
     res.status(200).json({
         success: true,
-        totalAmount,
         order
     })
 })
@@ -101,12 +100,14 @@ exports.updateOrder = catchAsyncError(async(req,res,next)=> {
 async function updateStock(id, quantity) {
     const product = await Product.findById(id);
     product.stock = product.stock - quantity
+    await order.save({validateBeforeSave: false})
+
 }
 
 // delete order 
 
 exports.deleteOrder = catchAsyncError(async(req,res,next)=> {
-    const order = await Order.findById(req.params.id).populate('user', 'name email')
+    const order = await Order.findById(req.params.id)
 
     if (!order) {
         return next(new ErrorHandler('No Order Found with this id ', 404))
@@ -114,7 +115,6 @@ exports.deleteOrder = catchAsyncError(async(req,res,next)=> {
 
     await order.remove()
     res.status(200).json({
-        success: true,
-        order
+        success: true
     })
 })
