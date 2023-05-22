@@ -86,8 +86,8 @@ exports.deleteProduct = catchAsynErrors (async (req, res, next) => {
 exports.createProductReview = catchAsynErrors(async(req,res,next)=> {
     const {rating, comment, productId} = req.body
     const review = {
-        user: req.user._id,
         name: req.user.name,
+        user: req.user._id,
         rating: Number(rating),
         comment
     }
@@ -101,17 +101,49 @@ exports.createProductReview = catchAsynErrors(async(req,res,next)=> {
             if(review.user.toString() === req.user._id.toString()){
                 review.comment = comment
                 review.rating = rating
-            }
+            } 
         })
     }
     else {
         product.reviews.push(review);
         product.numOfReviews = product.reviews.length
     }
-    product.ratings = product.reviews.reduce((acc, item)=>item.rating + acc, 0)/ product.reviews.length
+    product.rating = product.reviews.reduce((acc, item)=>item.rating + acc, 0)/ product.reviews.length
     await product.save({validateBeforeSave: false})
     res.status(200).json({
         success: true
     })
 
+})
+
+// Get product Reviews
+
+exports.getProductReviews = catchAsynErrors( async (req,res,next)=> {
+    const product = await Product.findById(req.query.id)
+
+    res.status(200).json({
+        success: true,
+        reviews: product.reviews
+    })
+})
+
+//Delete Review of the product 
+
+exports.deleteProductReview = catchAsynErrors( async (req,res,next)=> {
+    const product = await Product.findById(req.query.productId)
+    const reviews = product.reviews.filter(review => review._id.toString() !== req.query.id.toString())
+    const numOfReviews = reviews.length
+    const ratings = product.rating = product.reviews.reduce((acc, item)=>item.rating + acc, 0)/ reviews.length
+    await Product.findByIdAndUpdate(req.query.productId, {
+        reviews,
+        ratings,
+        numOfReviews
+    }, {
+        new: true,
+        runValidators: true,
+        useFindModify : false
+    })
+    res.status(200).json({
+        success: true,
+    })
 })

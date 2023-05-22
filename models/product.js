@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
             type: String,
             required: [true, 'Please Enter the prodcut description'],
         },
-        ratings : {
+        rating: {
             type: Number,
             default: 0,
         },
@@ -68,11 +68,26 @@ const productSchema = new mongoose.Schema({
             default:0
         },
         reviews: [
-            {name:{type:String, required:true}},
-            {rating:{type:Number, required:true}},
-            {comment:{type:String, required:true}},
-           
-        ],
+            {
+            user: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    requried: true,
+                },
+              name: {
+                type: String,
+                required: true, 
+              },
+              rating: {
+                type: Number,
+                required: true,
+              },
+              comment: {
+                type: String,
+                required: true,
+              },
+            },
+          ],
         user: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
